@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .animated-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .animated-button:hover {
+            background-color: #45a049;
+        }
+
+        .rotating-image-container {
+            width: 100px;
+            height: 100px;
+            overflow: hidden; /* Clip the image to the container */
+        }
+
+        .rotating-image {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out; /* Transition for rotation */
+        }
+
+        .rotating {
+            animation: rotate 2s linear infinite; /* CSS Animation */
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="colorButton" class="animated-button">Change Background Color</button>
+
+    <div class="rotating-image-container">
+        <img id="myImage" class="rotating-image" src="website.jpg" alt="Website">
+    </div>
+
+    <button id="toggleRotateButton" class="animated-button">Toggle Rotation</button>
+
+    <script>
+        function manageUserPreferences() {
+            const COLOR_PREFERENCE_KEY = 'backgroundColorPreference';
+            const ROTATION_PREFERENCE_KEY = 'rotationPreference';
+            const colorButton = document.getElementById('colorButton');
+            const body = document.body;
+            const image = document.getElementById('myImage');
+            const toggleRotateButton = document.getElementById('toggleRotateButton');
+
+            // Function to store background color preference
+            function storeBackgroundColor(color) {
+                localStorage.setItem(COLOR_PREFERENCE_KEY, color);
+            }
+
+            // Function to retrieve background color preference
+            function getBackgroundColorPreference() {
+                return localStorage.getItem(COLOR_PREFERENCE_KEY) || 'white'; // Default to white
+            }
+
+            // Function to apply stored background color
+            function applyBackgroundColorPreference() {
+                body.style.backgroundColor = getBackgroundColorPreference();
+            }
+
+            // Function to store rotation preference
+            function storeRotationPreference(shouldRotate) {
+                localStorage.setItem(ROTATION_PREFERENCE_KEY, shouldRotate);
+            }
+
+            // Function to retrieve rotation preference
+            function getRotationPreference() {
+                const storedValue = localStorage.getItem(ROTATION_PREFERENCE_KEY);
+                return storedValue === 'true'; // Convert string to boolean
+            }
+
+            // Function to apply stored rotation preference
+            function applyRotationPreference() {
+                if (getRotationPreference()) {
+                    image.classList.add('rotating');
+                    toggleRotateButton.textContent = 'Stop Rotation';
+                } else {
+                    image.classList.remove('rotating');
+                    toggleRotateButton.textContent = 'Start Rotation';
+                }
+            }
+
+            // Apply initial preferences
+            applyBackgroundColorPreference();
+            applyRotationPreference();
+
+            // Event listener for changing background color
+            colorButton.addEventListener('click', () => {
+                const newColor = body.style.backgroundColor === 'lightblue' ? 'white' : 'lightblue';
+                body.style.backgroundColor = newColor;
+                storeBackgroundColor(newColor);
+            });
+
+            // Event listener to toggle image rotation
+            toggleRotateButton.addEventListener('click', () => {
+                const shouldRotate = !image.classList.contains('rotating');
+                if (shouldRotate) {
+                    image.classList.add('rotating');
+                    toggleRotateButton.textContent = 'Stop Rotation';
+                } else {
+                    image.classList.remove('rotating');
+                    toggleRotateButton.textContent = 'Start Rotation';
+                }
+                storeRotationPreference(shouldRotate);
+            });
+        }
+
+        // Call the function to set up the functionality
+        manageUserPreferences();
+    </script>
+
+</body>
+</html>
